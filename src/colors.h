@@ -18,4 +18,4 @@ bool is_colors_eq(color *c, color *d);
 
 int color_value(double c);
 
-void color_str(char* red, char* green, char* blue, color col); 
+void color_str(char *red, char *green, char *blue, color col);

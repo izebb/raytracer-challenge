@@ -42,9 +42,8 @@ int color_value(double c) {
     return value;
 }
 
-
-void color_str(char* red, char* green, char* blue, color col) {
+void color_str(char *red, char *green, char *blue, color col) {
   sprintf(red, "%d", color_value(col.red));
-  sprintf(green, "%d",color_value(col.green));
+  sprintf(green, "%d", color_value(col.green));
   sprintf(blue, "%d", color_value(col.blue));
 }

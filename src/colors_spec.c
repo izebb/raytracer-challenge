@@ -1,5 +1,5 @@
-#include "common.h"
 #include "colors.h"
+#include "common.h"
 
 void should_create_new_new_color() {
   color c = new_color(-0.5, 0.4, 1.7);

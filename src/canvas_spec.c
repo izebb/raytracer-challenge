@@ -1,6 +1,6 @@
-#include "common.h"
-#include "colors.h"
 #include "canvas.h"
+#include "colors.h"
+#include "common.h"
 
 void should_create_canvas() {
   canvas c = new_canvas(10, 20, NULL);
@@ -12,7 +12,8 @@ void should_create_canvas() {
 
   for (int i = 0; i < 20; i++)
     for (int j = 0; j < 10; j++)
-      px = pixel_at(&c, i, j); is_colors_eq(&px, &expected_color);
+      px = pixel_at(&c, i, j);
+  is_colors_eq(&px, &expected_color);
 
   printf("canvas is created\n");
   canvas_destroy(&c);
@@ -42,11 +43,11 @@ void should_create_file() {
   write_pixel(&c, 4, 2, c3);
 
   int ppm_length = pixel_size(&c) * 10;
-  char output_1[ppm_length], output_2[ppm_length]; 
+  char output_1[ppm_length], output_2[ppm_length];
   canvas_to_ppm(output_1, &c);
   char *expected = "P3\n"
                    "5 3\n"
-				   "255\n"
+                   "255\n"
                    "255 0 0 0 0 0 0 0 0 0 0 0 0 0 0\n"
                    "0 0 0 0 0 0 0 128 0 0 0 0 0 0 0\n"
                    "0 0 0 0 0 0 0 0 0 0 0 0 0 0 255\n";
@@ -58,22 +59,23 @@ void should_create_file() {
   c = new_canvas(10, 2, &c4);
 
   canvas_to_ppm(output_2, &c);
-  expected = "P3\n10 2\n255\n"
-             "255 204 153 255 204 153 255 204 153 255 204 153 255 204 153 255 204\n"
-             "153 255 204 153 255 204 153 255 204 153 255 204 153\n"
-             "255 204 153 255 204 153 255 204 153 255 204 153 255 204 153 255 204\n"
-             "153 255 204 153 255 204 153 255 204 153 255 204 153\n";
+  expected =
+      "P3\n10 2\n255\n"
+      "255 204 153 255 204 153 255 204 153 255 204 153 255 204 153 255 204\n"
+      "153 255 204 153 255 204 153 255 204 153 255 204 153\n"
+      "255 204 153 255 204 153 255 204 153 255 204 153 255 204 153 255 204\n"
+      "153 255 204 153 255 204 153 255 204 153 255 204 153\n";
 
- printf("%s\n", output_2);
- assert(strcmp(expected, output_2) == 0);
- printf("ppm string generated\n");
- canvas_destroy(&c);
+  printf("%s\n", output_2);
+  assert(strcmp(expected, output_2) == 0);
+  printf("ppm string generated\n");
+  canvas_destroy(&c);
 }
 
 int main(void) {
-	should_create_canvas();
-  	should_get_write_pixel();
-	should_create_file();
+  should_create_canvas();
+  should_get_write_pixel();
+  should_create_file();
 
   return 0;
 }
