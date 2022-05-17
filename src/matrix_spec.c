@@ -1,5 +1,6 @@
 #include "common.h"
 #include "matrix.h"
+#include "tuple.h"
 
 void test_matrix_equality() {
 
@@ -34,12 +35,21 @@ void test_multiplying_matrices() {
 }
 
 void test_multiplying_matrix_tuple() {
-  double arr_[][4] = {{1, 2, 3, 4}, {2, 4, 4, 2}, {8, 6, 4, 1}, {0, 0, 0, 1}};
+  double arr[][4] = {{1, 2, 3, 4}, {2, 4, 4, 2}, {8, 6, 4, 1}, {0, 0, 0, 1}};
+  tuple t = new_tuple(1, 2, 3, 1);
+  matrix m = new_matrix(4, 4, arr);
+  tuple received = matrix_tuple_multiply(&m, &t);
+  tuple expected = new_tuple(18, 24, 33, 1);
+
+  assert(is_equal(&received, &expected));
+
+  printf("matrix, should multiple matrix and tuple without error\n");
 }
 
 int main(void) {
   test_matrix_equality();
   test_multiplying_matrices();
+  test_multiplying_matrix_tuple();
 
   return 0;
 }

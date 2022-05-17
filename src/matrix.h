@@ -1,4 +1,5 @@
 #define matrix_ref matrix *
+
 typedef struct Matrix {
   double *value;
   size_t rows, cols;
@@ -17,3 +18,7 @@ void matrix_insert(matrix_ref m, int row, int col, double value);
 void print_matrix(matrix_ref m);
 
 void matrix_multiply(matrix_ref a, matrix_ref b, matrix_ref result);
+
+tuple matrix_tuple_multiply(matrix_ref m, tuple *t);
+
+matrix tuple_to_matrix(tuple *t);

@@ -1,5 +1,6 @@
-#include "common.h"
 #include "matrix.h"
+#include "common.h"
+#include "tuple.h"
 
 matrix new_matrix(size_t rows, size_t cols, double arr[rows][cols]) {
   double *value = (double *)malloc(sizeof(double) * rows * cols);
@@ -45,7 +46,7 @@ void print_matrix(matrix_ref m) {
 }
 
 void matrix_multiply(matrix_ref a, matrix_ref b, matrix_ref c) {
-  assert(a->rows == b->cols);
+  assert(a->cols == b->rows);
   double arr[a->rows][b->cols], sum = 0.0;
   matrix result = new_matrix(a->rows, b->cols, arr);
 
@@ -61,4 +62,31 @@ void matrix_multiply(matrix_ref a, matrix_ref b, matrix_ref c) {
   }
 
   *c = result;
+}
+
+matrix tuple_to_matrix(tuple *t) {
+  double a[4][1];
+  matrix m = new_matrix(4, 1, a);
+
+  matrix_insert(&m, 0, 0, t->x);
+  matrix_insert(&m, 1, 0, t->y);
+  matrix_insert(&m, 2, 0, t->z);
+  matrix_insert(&m, 3, 0, t->w);
+
+  return m;
+}
+
+tuple matrix_tuple_multiply(matrix_ref m, tuple *t) {
+  double new_matrix_arr[4][1];
+
+  matrix mt = tuple_to_matrix(t);
+  matrix result = new_matrix(4, 1, new_matrix_arr);
+
+  matrix_multiply(m, &mt, &result);
+  double x = matrix_val(&result, 0, 0);
+  double y = matrix_val(&result, 1, 0);
+  double z = matrix_val(&result, 2, 0);
+  double w = matrix_val(&result, 3, 0);
+
+  return new_tuple(x, y, z, w);
 }
