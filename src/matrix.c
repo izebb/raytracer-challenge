@@ -17,6 +17,10 @@ double matrix_val(matrix_ref m, size_t r, size_t c) {
   return m->value[matrix_index(m, r, c)];
 }
 
+void matrix_insert(matrix_ref m, int row, int col, double value) {
+  m->value[matrix_index(m, row, col)] = value;
+}
+
 bool matrix_eq(matrix_ref m1, matrix_ref m2) {
   if (m1->rows != m2->rows || m1->cols != m2->cols)
     return false;
@@ -38,4 +42,23 @@ void print_matrix(matrix_ref m) {
 
     printf("\n");
   }
+}
+
+void matrix_multiply(matrix_ref a, matrix_ref b, matrix_ref c) {
+  assert(a->rows == b->cols);
+  double arr[a->rows][b->cols], sum = 0.0;
+  matrix result = new_matrix(a->rows, b->cols, arr);
+
+  for (int i = 0; i < a->rows; ++i) {
+    for (int j = 0; j < b->cols; ++j) {
+      for (int k = 0; k < b->rows; ++k) {
+        sum = sum + matrix_val(a, i, k) * matrix_val(b, k, j);
+      }
+
+      matrix_insert(&result, i, j, sum);
+      sum = 0;
+    }
+  }
+
+  *c = result;
 }
