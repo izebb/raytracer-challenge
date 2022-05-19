@@ -5,7 +5,11 @@ typedef struct Matrix {
   size_t rows, cols;
 } matrix;
 
-matrix new_matrix(size_t rows, size_t cols, double arr[rows][cols]);
+matrix_ref matrix_of(size_t rows, size_t cols, double arr[rows][cols]);
+
+matrix_ref new_matrix(size_t rows, size_t cols);
+
+void matrix_destroy(matrix_ref m);
 
 bool matrix_eq(matrix_ref matrix_1, matrix_ref matrix_2);
 
@@ -17,8 +21,10 @@ void matrix_insert(matrix_ref m, int row, int col, double value);
 
 void print_matrix(matrix_ref m);
 
-void matrix_multiply(matrix_ref a, matrix_ref b, matrix_ref result);
+matrix_ref matrix_multiply(matrix_ref a, matrix_ref b);
 
 tuple matrix_tuple_multiply(matrix_ref m, tuple *t);
 
-matrix tuple_to_matrix(tuple *t);
+matrix_ref tuple_to_matrix(tuple *t);
+
+matrix_ref identity_matrix(size_t size);

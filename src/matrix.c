@@ -1,13 +1,42 @@
-#include "matrix.h"
 #include "common.h"
 #include "tuple.h"
+#include "matrix.h"
 
-matrix new_matrix(size_t rows, size_t cols, double arr[rows][cols]) {
-  double *value = (double *)malloc(sizeof(double) * rows * cols);
-  value = &arr[0][0];
-  matrix m = {value, rows, cols};
+matrix_ref matrix_of(size_t rows, size_t cols, double arr[rows][cols]) {
+  matrix* m = (matrix*)malloc(sizeof(matrix));
+  double* value = (double*)malloc(sizeof(double) * rows * cols);
+  
+  m->cols = cols;
+  m->rows = rows;
+  m->value = value;
+
+  for(int i = 0; i < rows; ++i) {
+	for(int j = 0; j < cols; ++j) {
+	  matrix_insert(m, i, j, arr[i][j]); 
+	}
+  }
 
   return m;
+}
+
+matrix_ref new_matrix(size_t rows, size_t cols) {
+  matrix* m = (matrix*)malloc(sizeof(matrix));
+  double* value = (double*)malloc(sizeof(double) * rows * cols);
+
+  m->cols = cols;
+  m->rows = rows;
+  m->value = value; 
+  for(int i = 0; i < rows; ++i) {
+	for(int j = 0; j < cols; ++j) {
+	  matrix_insert(m, i, j, 0.0); 
+	}
+  }
+  return m;
+}
+
+void matrix_destroy(matrix_ref m) {
+  free(m->value);
+  free(m);
 }
 
 size_t matrix_index(matrix_ref m, size_t r, size_t c) {
@@ -45,10 +74,10 @@ void print_matrix(matrix_ref m) {
   }
 }
 
-void matrix_multiply(matrix_ref a, matrix_ref b, matrix_ref c) {
+matrix_ref matrix_multiply(matrix_ref a, matrix_ref b) {
   assert(a->cols == b->rows);
-  double arr[a->rows][b->cols], sum = 0.0;
-  matrix result = new_matrix(a->rows, b->cols, arr);
+  double sum = 0.0;
+  matrix_ref result = new_matrix(a->rows, b->cols);
 
   for (int i = 0; i < a->rows; ++i) {
     for (int j = 0; j < b->cols; ++j) {
@@ -56,37 +85,46 @@ void matrix_multiply(matrix_ref a, matrix_ref b, matrix_ref c) {
         sum = sum + matrix_val(a, i, k) * matrix_val(b, k, j);
       }
 
-      matrix_insert(&result, i, j, sum);
+      matrix_insert(result, i, j, sum);
       sum = 0;
     }
   }
 
-  *c = result;
+  return result;
 }
 
-matrix tuple_to_matrix(tuple *t) {
-  double a[4][1];
-  matrix m = new_matrix(4, 1, a);
+matrix_ref tuple_to_matrix(tuple *t) {
+  matrix_ref m = new_matrix(4, 1);
 
-  matrix_insert(&m, 0, 0, t->x);
-  matrix_insert(&m, 1, 0, t->y);
-  matrix_insert(&m, 2, 0, t->z);
-  matrix_insert(&m, 3, 0, t->w);
+  matrix_insert(m, 0, 0, t->x);
+  matrix_insert(m, 1, 0, t->y);
+  matrix_insert(m, 2, 0, t->z);
+  matrix_insert(m, 3, 0, t->w);
 
   return m;
 }
 
 tuple matrix_tuple_multiply(matrix_ref m, tuple *t) {
-  double new_matrix_arr[4][1];
+  matrix_ref mt = tuple_to_matrix(t);
+  matrix_ref result = matrix_multiply(m, mt);
 
-  matrix mt = tuple_to_matrix(t);
-  matrix result = new_matrix(4, 1, new_matrix_arr);
+  double x = matrix_val(result, 0, 0);
+  double y = matrix_val(result, 1, 0);
+  double z = matrix_val(result, 2, 0);
+  double w = matrix_val(result, 3, 0);
 
-  matrix_multiply(m, &mt, &result);
-  double x = matrix_val(&result, 0, 0);
-  double y = matrix_val(&result, 1, 0);
-  double z = matrix_val(&result, 2, 0);
-  double w = matrix_val(&result, 3, 0);
+  matrix_destroy(mt);
+  matrix_destroy(result);
 
   return new_tuple(x, y, z, w);
+}
+
+matrix_ref identity_matrix(size_t  size) {
+  matrix_ref m = new_matrix(size, size);
+
+  for(size_t i = 0; i < size; ++i) {
+	matrix_insert(m, i, i, 1);
+  }
+  
+  return m;
 }
