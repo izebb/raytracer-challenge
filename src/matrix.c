@@ -128,3 +128,21 @@ matrix_ref identity_matrix(size_t  size) {
   
   return m;
 }
+
+void matrix_transpose(matrix_ref m) {
+  double temp;
+  size_t rows = m->rows;
+
+  for(int i = 0; i < m->rows ; ++i) {
+	for(int j = 0; j < i; ++j) {
+	  temp = matrix_val(m, i, j);
+	  
+	  matrix_insert(m, i, j, matrix_val(m, j, i));
+	  matrix_insert(m, j, i, temp);
+
+	}
+  }
+
+  m->rows = m->cols;
+  m->cols = rows;
+}

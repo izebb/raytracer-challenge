@@ -28,3 +28,5 @@ tuple matrix_tuple_multiply(matrix_ref m, tuple *t);
 matrix_ref tuple_to_matrix(tuple *t);
 
 matrix_ref identity_matrix(size_t size);
+
+void matrix_transpose(matrix_ref m);

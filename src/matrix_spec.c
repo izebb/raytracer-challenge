@@ -19,16 +19,16 @@ void test_matrix_equality() {
   matrix_destroy(m2);
   matrix_destroy(m3);
 
-  printf("matrics, should be equal\n");
+  printf("matrix, should be equal\n");
 }
 
 void test_multiplying_matrices() {
   double a[4][4] = {{1, 2, 3, 4}, {5, 6, 7, 8}, {9, 8, 7, 6}, {5, 4, 3, 2}};
   double b[4][4] = {{-2, 1, 2, 3}, {3, 2, 1, -1}, {4, 3, 6, 5}, {1, 2, 7, 8}};
   double c[4][4] = {{20, 22, 50, 48},
-                   {44, 54, 114, 108},
-                   {40, 58, 110, 102},
-                   {16, 26, 46, 42}};
+                    {44, 54, 114, 108},
+                    {40, 58, 110, 102},
+                    {16, 26, 46, 42}};
 
   matrix_ref ma = matrix_of(4, 4, a);
   matrix_ref mb = matrix_of(4, 4, b);
@@ -37,7 +37,7 @@ void test_multiplying_matrices() {
   matrix_ref result = matrix_multiply(ma, mb);
 
   assert(matrix_eq(result, expected));
-  printf("matrices, should multiply without errors\n");
+  printf("matrix, should multiply without errors\n");
 
   matrix_destroy(ma);
   matrix_destroy(mb);
@@ -70,7 +70,34 @@ void test_identity_matrix() {
   assert(matrix_eq(m, result));
 
   matrix_destroy(m);
+  matrix_destroy(mid);
+
   printf("matrix, should multiply identity_matrix correctly\n");
+
+  tuple t = new_tuple(1, 2, 3, 1);
+  mid = identity_matrix(4);
+  tuple received = matrix_tuple_multiply(mid, &t);
+
+  assert(is_equal(&received, &t));
+  matrix_destroy(mid);
+  
+  printf("matrix, should multiply identity_matrix with tuple correctly\n");
+}
+
+void test_transpose_matrix() {
+  double input_arr[4][4] = {{0, 9, 3, 0}, {9, 8, 0, 8}, {1, 8, 5, 3}, {0, 0, 5, 8}};
+  double result_input_arr[4][4] = {{0, 9, 1, 0}, {9, 8, 8, 0}, {3, 0, 5, 5}, {0, 8, 3, 8}};
+
+  matrix_ref input = matrix_of(4, 4, input_arr);
+  matrix_ref result = matrix_of(4, 4, result_input_arr);
+
+  matrix_transpose(input);
+
+  assert(matrix_eq(input, result));
+  printf("matrix, transpose matrix without error\n");
+
+  matrix_destroy(input);
+  matrix_destroy(result);
 }
 
 int main(void) {
@@ -78,6 +105,7 @@ int main(void) {
   test_multiplying_matrices();
   test_multiplying_matrix_tuple();
   test_identity_matrix();
+  test_transpose_matrix();
 
   return 0;
 }
